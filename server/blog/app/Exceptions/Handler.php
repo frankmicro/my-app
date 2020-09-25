@@ -43,8 +43,35 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Exception $exception)
     {
-        return parent::render($request, $e);
+        $response = [];
+        $response['request_id'] = '';
+        $response['success'] = false;
+
+        if ($exception instanceof AuthServiceException) {
+            $response['request_id'] = '';
+            $response['success'] = false;
+            $exception_code = $exception->getCode();
+            $response['response_code'] = (!empty($exception_code)) ? $exception_code : 203;
+            $response['message'] = $exception->getMessage();
+            return response()->json($response, 401);
+        } elseif ($exception instanceof ValidationException) {
+            $response['response_code'] = 101;
+            $response['message'] = $exception->getMessage();
+            return response()->json($response, 400);
+        } elseif ($exception instanceof BlogErrorException) {
+            $exception_code = $exception->getCode();
+            $response['response_code'] = (!empty($exception_code)) ? $exception_code : 102;
+
+            $response['message'] = $exception->getMessage();
+            if (App::environment('production')) {
+                $response['message'] = 'Something went wrong!';
+            }
+
+            return response()->json($response, 500);
+        } 
+
+        return parent::render($request, $exception);
     }
 }

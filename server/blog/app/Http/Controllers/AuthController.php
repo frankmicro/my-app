@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\CustomValidationService;
+use App\Services\Traits\ResponseCodeTrait;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
-use App\Services\Traits\ResponseCodeTrait;
 
 class AuthController extends Controller
 {
@@ -14,26 +15,35 @@ class AuthController extends Controller
      */
     protected $jwt;
 
+    protected $custom_validation;
+
+    protected $request;
+
     use ResponseCodeTrait;
 
-    public function __construct(JWTAuth $jwt)
+    public function __construct(JWTAuth $jwt, CustomValidationService $custom_validation, Request $request)
     {
-        $this->jwt = $jwt;
+        $this->jwt               = $jwt;
+        $this->custom_validation = $custom_validation;
+        $this->request           = $request;
     }
 
-    public function postLogin(Request $request)
+    public function postLogin()
     {
-        $response = self::getResponseCode(1);
+        $data = $this->request->all();
 
-        $this->validate($request, [
-            'email'    => 'required|email|max:255',
-            'password' => 'required',
-        ]);
+        $required_fields = ['email', 'password'];
+
+        $rules = $this->custom_validation->getRules($required_fields);
+
+        $this->validateApi($data, $rules);
+
+        $response = self::getResponseCode(1);
 
         try {
 
-            if (! $token = $this->jwt->attempt($request->only('email', 'password'))) {
-                $response = self::getResponseCode(104);
+            if (!$token = $this->jwt->attempt($this->request->only('email', 'password'))) {
+                $response            = self::getResponseCode(104);
                 $response['message'] = "user_not_found";
                 return $this->response($response);
             }
@@ -51,7 +61,8 @@ class AuthController extends Controller
             return response()->json(['token_absent' => $e->getMessage()], 500);
 
         }
-        $response['data'] = compact('token');
+        $response['data']         = compact('token');
+        $response['data']['user'] = \Auth::user();
         return $this->response($response);
     }
 }
