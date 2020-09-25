@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  client_secret: "IXpwBOCNvcTVCB7opNWSUeoOeoOaw6LQ7RV6blda",
+  URL: "http://localhost/my-app/server/blog/public/api/",
 };
 
 /*
