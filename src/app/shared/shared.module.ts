@@ -4,9 +4,10 @@ import { AuthService } from '../shared/services/auth.service';
 import { AuthGuard } from '../shared/guards/auth.guard';
 import { EncrDecrService } from '../shared/services/encr-decr-service.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CommonComponent } from './modals/common/common.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [CommonComponent],
   imports: [
     CommonModule,
   ],

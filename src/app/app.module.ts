@@ -18,7 +18,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './shared/shared.module';
 import { LogoutComponent } from './logout/logout.component';
-
+import { PagesRoutingModule } from './pages/pages-routing.module';
+import { ModalModule, BsModalRef } from 'ngx-bootstrap/modal';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +34,7 @@ import { LogoutComponent } from './logout/logout.component';
   ],
   imports: [
     BrowserModule,
+    PagesRoutingModule,
     AppRoutingModule,
     DropdownModule,
     FormsModule,
@@ -40,9 +42,11 @@ import { LogoutComponent } from './logout/logout.component';
     HttpClientModule,
     ReactiveFormsModule,
     SharedModule,
+    ModalModule.forRoot(),
     TableModule
   ],
   providers: [
+    BsModalRef,
     {
       provide: HTTP_INTERCEPTORS, 
       useClass: HttpConfigInterceptor, multi: true

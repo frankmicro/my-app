@@ -8,12 +8,13 @@ import { AuthGuard } from './shared/guards/auth.guard';
 import { LogoutComponent } from './logout/logout.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
+  { path: '', pathMatch: 'full', redirectTo: 'login'},
+  //{ path: 'login', component: LoginComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'dashboard', 'canActivate': [AuthGuard], component: DashboardComponent },
   { path: 'hello', component: HelloworldComponent },
   { path: 'books', component: BookDataComponent },
-  { path: '**', redirectTo: 'login'}
+  { path: '**', component: LoginComponent}
 ];
 
 @NgModule({

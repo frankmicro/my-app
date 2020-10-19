@@ -22,7 +22,7 @@ export class LogoutComponent implements OnInit {
       this._authService.authCheck('/dashboard');
     } else {
       this._commonService.subjectActivated$.next(false);
-      this._authService.authCheck('/auth/login');
+      this._authService.authCheck('/login');
     }
   }
 
